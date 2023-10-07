@@ -1,10 +1,15 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from '@nestjs/passport';
+import { UserService } from "src/user/user.service";
+import { UnauthorizedException } from "@nestjs/common";
 
 @Injectable()
 export class AtGuard extends AuthGuard('jwt') {
-    constructor(private readonly reflector: Reflector) {
+    constructor(
+        private readonly reflector: Reflector,
+        private readonly userService: UserService
+        ) {
         super();
     }
     
@@ -17,6 +22,10 @@ export class AtGuard extends AuthGuard('jwt') {
             context.getClass(),
         ]);
         if (isPublic) return true;
+
+         // Retrieve the user from the token
+         const request = context.switchToHttp().getRequest();
+         const user = request.user; 
 
         return super.canActivate(context);
     }

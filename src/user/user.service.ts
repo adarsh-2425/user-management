@@ -99,19 +99,11 @@ export class UserService {
 
     // User Dashboard
     async userDashboard(user: JwtPayload) {
-        const User = await this.userModel.findById(user.sub);
-        if(User.isBlocked) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.FORBIDDEN,   
-                    error: 'You are Blocked. Please Contact Admin'
-                },
-                HttpStatus.FORBIDDEN
-            )
-        } else {
-            return `Welcome ${User.username}`
-        }
+        const User = await this.userModel.findById(user.sub)
+        return `Welcome ${User.username}`
         
     }
+
+    
 }
 
